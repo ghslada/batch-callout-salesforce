@@ -1,0 +1,30 @@
+@isTest
+public class BatchCalloutTest {
+
+    @isTest
+    public static void testBatchCallout() {
+        Test.setMock(HttpCalloutMock.class, new BatchCalloutMock());
+        //Test.startTest();
+        
+        // Call method to test.
+        // This causes a fake response to be sent
+        // from the class that implements HttpCalloutMock. 
+        BatchCallout bc = new BatchCallout();
+        
+        //Database.executeBatch(bc, 200);
+        HttpResponse res = bc.makeGet();
+        bc.start(null);
+        bc.execute(null, new List<sObject>());
+        bc.finish(null);
+        // Verify response received contains fake values
+        String contentType = res.getHeader('Content-Type');
+        System.assert(contentType == 'application/json');
+        String actualValue = res.getBody();
+        String expectedValue ='[{"postId": 1,"id": 1,"name": "id labore ex et quam laborum","email": "Eliseo@gardner.biz","body": "laudantium enim quasi est quidem magnam voluptate ipsam eostempora quo necessitatibusdolor quam autem quasireiciendis et nam sapiente accusantium"}]';
+        System.assertEquals(actualValue, expectedValue);
+        System.assertEquals(200, res.getStatusCode());
+        
+
+        //Test.stopTest();
+    }
+}
